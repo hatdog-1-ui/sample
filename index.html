@@ -731,6 +731,99 @@
       .do-dont { grid-template-columns: 1fr; }
     }
 
+    /* ── QR Generator ─────────────────────────────────────────────── */
+    #qr-generator { background: var(--bg-raised); border-radius: 20px; }
+
+    .qr-widget {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .qr-form {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: .45rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .8rem 1.1rem;
+      color: var(--text);
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,212,255,.1);
+    }
+
+    .form-group input::placeholder { color: var(--muted); }
+
+    .qr-output {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .qr-output.visible { display: block; }
+
+    .qr-label {
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .qr-label strong { color: var(--accent); word-break: break-all; }
+
+    #qrCanvas {
+      display: inline-block;
+      padding: 1rem;
+      background: #fff;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .qr-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .qr-hint {
+      margin-top: 1.25rem;
+      padding: .85rem 1rem;
+      background: rgba(0,212,255,.06);
+      border: 1px solid rgba(0,212,255,.15);
+      border-radius: var(--radius-sm);
+      font-size: .82rem;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .qr-hint strong { color: var(--accent); }
+
     /* ── Utility ───────────────────────────────────────────────────── */
     .hidden { display: none !important; }
     .text-center { text-align: center; }
@@ -756,6 +849,7 @@
     <li><a href="#password-checker" class="nav-link">Password</a></li>
     <li><a href="#quiz"             class="nav-link">Quiz</a></li>
     <li><a href="#safe-browsing"    class="nav-link">Safe Browsing</a></li>
+    <li><a href="#qr-generator"     class="nav-link">QR Code</a></li>
   </ul>
 
   <div class="hamburger" id="hamburger" aria-label="Menu" role="button" tabindex="0">
@@ -1399,6 +1493,54 @@
 
 </section>
 
+<!-- ── QR Code Generator ────────────────────────────────────────────── -->
+<section id="qr-generator">
+  <div class="section-header">
+    <span class="section-badge">Tool</span>
+    <h2>QR Code for PDF</h2>
+    <p>Generate a QR code linked to your PDF. Students scan it and the document opens instantly on their device.</p>
+  </div>
+
+  <div class="qr-widget">
+    <div class="qr-form">
+      <div class="form-group">
+        <label for="pdfUrl">PDF Link (URL)</label>
+        <input type="url" id="pdfUrl" placeholder="https://example.com/your-document.pdf" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label for="pdfLabel">Label <span style="opacity:.5;">(optional — shown below QR code)</span></label>
+        <input type="text" id="pdfLabel" placeholder="e.g. Chapter 3 – Network Security" autocomplete="off" />
+      </div>
+      <button class="btn btn-primary" id="generateQrBtn" style="width:100%;justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/>
+          <rect x="19" y="14" width="2" height="2"/><rect x="14" y="19" width="2" height="2"/>
+          <rect x="17" y="17" width="2" height="5"/><rect x="19" y="19" width="5" height="2"/>
+        </svg>
+        Generate QR Code
+      </button>
+      <p id="qrError" style="display:none;margin-top:.75rem;color:var(--danger);font-size:.85rem;"></p>
+    </div>
+
+    <div class="qr-output" id="qrOutput">
+      <p class="qr-label">Scanning this QR code opens: <strong id="qrUrlDisplay"></strong></p>
+      <div id="qrCanvas"></div>
+      <p id="qrLabelDisplay" style="margin-bottom:1.25rem;font-size:1rem;font-weight:600;color:var(--text);display:none;"></p>
+      <div class="qr-actions">
+        <button class="btn btn-primary" id="downloadQrBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PNG
+        </button>
+        <button class="btn btn-outline" id="resetQrBtn">Generate Another</button>
+      </div>
+      <div class="qr-hint">
+        <strong>Tip:</strong> Print and display this QR code in class, paste it into a slide, or share the image digitally — students scan it with any phone camera to open the PDF instantly.
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── Footer ───────────────────────────────────────────────────────── -->
 <footer>
   <p style="margin-bottom:.35rem;"><strong>CyberGuard</strong> — Cybersecurity Awareness Portal</p>
@@ -1757,6 +1899,114 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
   });
 });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   QR Code Generator
+═══════════════════════════════════════════════════════════════════ */
+(function () {
+  const pdfUrlInput   = document.getElementById('pdfUrl');
+  const pdfLabelInput = document.getElementById('pdfLabel');
+  const generateBtn   = document.getElementById('generateQrBtn');
+  const qrError       = document.getElementById('qrError');
+  const qrOutput      = document.getElementById('qrOutput');
+  const qrCanvas      = document.getElementById('qrCanvas');
+  const qrUrlDisplay  = document.getElementById('qrUrlDisplay');
+  const qrLabelDisp   = document.getElementById('qrLabelDisplay');
+  const downloadBtn   = document.getElementById('downloadQrBtn');
+  const resetBtn      = document.getElementById('resetQrBtn');
+
+  let qrInstance = null;
+
+  function isValidUrl(str) {
+    try { const u = new URL(str); return u.protocol === 'http:' || u.protocol === 'https:'; }
+    catch { return false; }
+  }
+
+  generateBtn.addEventListener('click', () => {
+    const url   = pdfUrlInput.value.trim();
+    const label = pdfLabelInput.value.trim();
+
+    qrError.style.display = 'none';
+
+    if (!url) {
+      qrError.textContent = 'Please enter a PDF URL.';
+      qrError.style.display = 'block';
+      return;
+    }
+
+    if (!isValidUrl(url)) {
+      qrError.textContent = 'Please enter a valid URL starting with http:// or https://';
+      qrError.style.display = 'block';
+      return;
+    }
+
+    // Clear previous QR
+    qrCanvas.innerHTML = '';
+    if (qrInstance) { qrInstance.clear(); qrInstance = null; }
+
+    qrInstance = new QRCode(qrCanvas, {
+      text:         url,
+      width:        220,
+      height:       220,
+      colorDark:    '#000000',
+      colorLight:   '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    qrUrlDisplay.textContent = url;
+
+    if (label) {
+      qrLabelDisp.textContent = label;
+      qrLabelDisp.style.display = 'block';
+    } else {
+      qrLabelDisp.style.display = 'none';
+    }
+
+    qrOutput.classList.add('visible');
+    qrOutput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const img = qrCanvas.querySelector('img');
+    const canvas = qrCanvas.querySelector('canvas');
+    let dataUrl;
+
+    if (canvas) {
+      dataUrl = canvas.toDataURL('image/png');
+    } else if (img) {
+      const c = document.createElement('canvas');
+      c.width  = img.naturalWidth  || 220;
+      c.height = img.naturalHeight || 220;
+      c.getContext('2d').drawImage(img, 0, 0);
+      dataUrl = c.toDataURL('image/png');
+    } else {
+      return;
+    }
+
+    const a = document.createElement('a');
+    const label = pdfLabelInput.value.trim();
+    a.download = (label ? label.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'qr_code') + '.png';
+    a.href = dataUrl;
+    a.click();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    qrOutput.classList.remove('visible');
+    qrCanvas.innerHTML = '';
+    if (qrInstance) { qrInstance.clear(); qrInstance = null; }
+    pdfUrlInput.value = '';
+    pdfLabelInput.value = '';
+    pdfUrlInput.focus();
+  });
+
+  // Allow Enter key to trigger generation
+  [pdfUrlInput, pdfLabelInput].forEach(el => {
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') generateBtn.click(); });
+  });
+})();
 </script>
 </body>
 </html>

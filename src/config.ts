@@ -12,4 +12,6 @@ export const config = {
   walletPrivateKey: required("WALLET_PRIVATE_KEY"),
   minSolBalance: parseFloat(process.env.MIN_SOL_BALANCE || "0.05"),
   compoundIntervalHours: parseInt(process.env.COMPOUND_INTERVAL_HOURS || "24"),
+  telegramToken: process.env.TELEGRAM_BOT_TOKEN || "",
+  telegramChatId: process.env.TELEGRAM_CHAT_ID || "",
 };

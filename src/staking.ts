@@ -13,6 +13,7 @@ import {
 import BN from "bn.js";
 import { config } from "./config";
 import { getSolBalance, log } from "./wallet";
+import { sendTelegramMessage } from "./telegram";
 
 export async function getMarinadeClient(wallet: Keypair, connection: Connection): Promise<Marinade> {
   const marinadeConfig = new MarinadeConfig({
@@ -71,7 +72,9 @@ export async function runStakingCycle(
   const stakeable = solBalance - config.minSolBalance;
 
   if (stakeable <= 0.01) {
+    const msg = `⚠️ *Staking Bot Alert*\n\nNot enough SOL to stake.\nCurrent balance: ${solBalance.toFixed(4)} SOL\nMinimum needed: ${(config.minSolBalance + 0.01).toFixed(2)} SOL`;
     log(`Not enough SOL to stake. Need more than ${config.minSolBalance + 0.01} SOL total.`);
+    await sendTelegramMessage(msg);
     return;
   }
 
@@ -79,7 +82,6 @@ export async function runStakingCycle(
 
   const marinade = await getMarinadeClient(wallet, connection);
 
-  // mSOL mint address (mainnet)
   const MSOL_MINT = new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So");
 
   const msolBefore = await getMsolBalance(connection, wallet, MSOL_MINT);
@@ -92,4 +94,15 @@ export async function runStakingCycle(
   const msolAfter = await getMsolBalance(connection, wallet, MSOL_MINT);
   log(`mSOL balance after: ${msolAfter.toFixed(4)} mSOL`);
   log(`Earned ${(msolAfter - msolBefore).toFixed(4)} mSOL this cycle`);
+
+  const msg =
+    `✅ *Staking Successful!*\n\n` +
+    `📅 *Time:* ${new Date().toLocaleString()}\n` +
+    `💰 *Staked:* ${stakeable.toFixed(4)} SOL\n` +
+    `🪙 *mSOL before:* ${msolBefore.toFixed(4)}\n` +
+    `🪙 *mSOL after:* ${msolAfter.toFixed(4)}\n` +
+    `📈 *mSOL earned:* +${(msolAfter - msolBefore).toFixed(4)}\n` +
+    `🔗 [View Transaction](https://solscan.io/tx/${sig})`;
+
+  await sendTelegramMessage(msg);
 }

@@ -1,1 +1,5 @@
 .gradle/
+node_modules/
+.expo/
+dist/
+*.tsbuildinfo

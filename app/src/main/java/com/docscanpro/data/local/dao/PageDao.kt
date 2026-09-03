@@ -29,4 +29,7 @@ interface PageDao {
 
     @Query("DELETE FROM pages WHERE documentId = :documentId")
     suspend fun deletePagesForDocument(documentId: String)
+
+    @Query("DELETE FROM pages WHERE id = :pageId")
+    suspend fun deletePageById(pageId: String)
 }

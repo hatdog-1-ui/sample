@@ -4,6 +4,10 @@
         name="documents"
         path="Documents/" />
 
+    <files-path
+        name="internal_documents"
+        path="documents/" />
+
     <cache-path
         name="camera_captures"
         path="captures/" />

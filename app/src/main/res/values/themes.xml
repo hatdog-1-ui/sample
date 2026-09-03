@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. Material3 DayNight so the window background/splash
+         behaves correctly before Compose content is drawn. -->
+    <style name="Theme.DocScanPro" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+    </style>
+</resources>

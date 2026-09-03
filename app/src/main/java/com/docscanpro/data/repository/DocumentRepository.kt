@@ -62,6 +62,10 @@ class DocumentRepository @Inject constructor(
     fun getPagesForDocument(documentId: String): Flow<List<Page>> =
         pageDao.getPagesForDocument(documentId).map { list -> list.map { it.toDomain() } }
 
+    suspend fun getPage(pageId: String): Page? = withContext(Dispatchers.IO) {
+        pageDao.getPageById(pageId)?.toDomain()
+    }
+
     suspend fun savePage(page: Page) = withContext(Dispatchers.IO) {
         pageDao.insert(page.toEntity())
     }

@@ -24,6 +24,9 @@ interface PageDao {
     @Query("SELECT * FROM pages WHERE documentId = :documentId ORDER BY pageNumber ASC")
     fun getPagesForDocument(documentId: String): Flow<List<PageEntity>>
 
+    @Query("SELECT * FROM pages WHERE id = :pageId LIMIT 1")
+    suspend fun getPageById(pageId: String): PageEntity?
+
     @Query("SELECT COUNT(*) FROM pages WHERE documentId = :documentId")
     suspend fun getPageCount(documentId: String): Int
 

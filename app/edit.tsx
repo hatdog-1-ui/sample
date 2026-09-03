@@ -14,6 +14,7 @@ import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../src/utils/colors';
 import { getPagesForDocument, updatePage } from '../src/database/repository';
+import { rotateImage } from '../src/utils/imageProcessor';
 import type { Page, FilterType } from '../src/types';
 
 const FILTERS: { key: FilterType; label: string; color: string }[] = [
@@ -89,8 +90,9 @@ export default function EditScreen() {
   };
 
   const handleSave = async () => {
-    if (currentPage) {
-      await updatePage(currentPage.id, { ocrText: currentPage.ocrText });
+    if (currentPage && rotation !== 0) {
+      const rotatedUri = await rotateImage(currentPage.imageUri, rotation);
+      await updatePage(currentPage.id, { imageUri: rotatedUri });
     }
     router.push(`/pdf-preview?documentId=${documentId}`);
   };

@@ -65,37 +65,29 @@ export default function CropScreen() {
     ]);
   }, []);
 
+  const startCornerRef = useRef<Corner>({ x: 0, y: 0 });
+
   const createPanResponder = useCallback(
     (index: number) =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
-        onPanResponderGrant: () => {},
+        onPanResponderGrant: () => {
+          startCornerRef.current = cornersRef.current[index];
+        },
         onPanResponderMove: (
           _event: GestureResponderEvent,
           gestureState: PanResponderGestureState
         ) => {
           setCorners((prev) => {
             const updated = [...prev];
-            const newX = Math.max(0, Math.min(imageLayout.width, prev[index].x + gestureState.dx));
-            const newY = Math.max(0, Math.min(imageLayout.height, prev[index].y + gestureState.dy));
+            const newX = Math.max(0, Math.min(imageLayout.width, startCornerRef.current.x + gestureState.dx));
+            const newY = Math.max(0, Math.min(imageLayout.height, startCornerRef.current.y + gestureState.dy));
             updated[index] = { x: newX, y: newY };
             return updated;
           });
         },
-        onPanResponderRelease: (
-          _event: GestureResponderEvent,
-          gestureState: PanResponderGestureState
-        ) => {
-          // Finalize position
-          setCorners((prev) => {
-            const updated = [...prev];
-            const newX = Math.max(0, Math.min(imageLayout.width, prev[index].x));
-            const newY = Math.max(0, Math.min(imageLayout.height, prev[index].y));
-            updated[index] = { x: newX, y: newY };
-            return updated;
-          });
-        },
+        onPanResponderRelease: () => {},
       }),
     [imageLayout.width, imageLayout.height]
   );

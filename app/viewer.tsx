@@ -128,8 +128,9 @@ export default function ViewerScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => router.push(`/ocr?pageId=${firstPageId}`)}
+          style={[styles.actionButton, pages.length === 0 && { opacity: 0.4 }]}
+          onPress={() => pages.length > 0 && router.push(`/ocr?pageId=${firstPageId}`)}
+          disabled={pages.length === 0}
         >
           <Ionicons name="text-outline" size={22} color={Colors.text} />
           <Text style={styles.actionLabel}>OCR</Text>

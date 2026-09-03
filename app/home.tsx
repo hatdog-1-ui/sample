@@ -79,8 +79,8 @@ export default function HomeScreen() {
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="search" size={22} color={Colors.text} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="grid-outline" size={22} color={Colors.text} />
+          <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/settings')}>
+            <Ionicons name="settings-outline" size={22} color={Colors.text} />
           </TouchableOpacity>
         </View>
       </View>

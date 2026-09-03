@@ -4,17 +4,17 @@ import { useRouter } from 'expo-router';
 import { Camera } from 'expo-camera';
 import { Colors } from '../src/utils/colors';
 import { getDatabase } from '../src/database/db';
-import { LinearGradient } from '../src/components/LinearGradient';
 
 export default function SplashScreen() {
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     async function init() {
       await getDatabase();
       setIsReady(true);
-      const timer = setTimeout(async () => {
+      timer = setTimeout(async () => {
         const { status } = await Camera.getCameraPermissionsAsync();
         if (status === 'granted') {
           router.replace('/home');
@@ -22,9 +22,9 @@ export default function SplashScreen() {
           router.replace('/permissions');
         }
       }, 2000);
-      return () => clearTimeout(timer);
     }
     init();
+    return () => clearTimeout(timer);
   }, []);
 
   return (

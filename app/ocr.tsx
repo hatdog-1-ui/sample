@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -31,6 +31,7 @@ export default function OcrScreen() {
   const [page, setPage] = useState<Page | null>(null);
   const [processing, setProcessing] = useState(true);
   const [extractedText, setExtractedText] = useState('');
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const loadData = useCallback(async () => {
     if (!pageId) {
@@ -46,11 +47,8 @@ export default function OcrScreen() {
       return;
     }
 
-    // OCR (e.g. ML Kit text recognition) requires a native development build
-    // and isn't available in Expo Go. Simulate a short processing delay and
-    // fall back to demo text so the flow can still be exercised here.
     setProcessing(true);
-    setTimeout(async () => {
+    timerRef.current = setTimeout(async () => {
       setExtractedText(DEMO_OCR_TEXT);
       setProcessing(false);
       if (loadedPage) {
@@ -61,6 +59,7 @@ export default function OcrScreen() {
 
   useEffect(() => {
     loadData();
+    return () => clearTimeout(timerRef.current);
   }, [loadData]);
 
   const handleSelectAll = useCallback(() => {

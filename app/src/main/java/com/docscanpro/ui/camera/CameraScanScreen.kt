@@ -32,7 +32,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -67,21 +66,6 @@ fun CameraScanScreen(
     val isCapturing by viewModel.isCapturing.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
-
-    // Set up the image-captured callback
-    DisposableEffect(isBatchMode) {
-        viewModel.cameraManager.unbindAll()
-
-        val previewView = PreviewView(context)
-        viewModel.cameraManager.bindCamera(lifecycleOwner, previewView) { uri ->
-            viewModel.onImageCaptured(uri)
-            if (!isBatchMode) {
-                val encoded = Uri.encode(uri.toString())
-                onImageCaptured(encoded)
-            }
-        }
-        onDispose { }
-    }
 
     Box(
         modifier = Modifier

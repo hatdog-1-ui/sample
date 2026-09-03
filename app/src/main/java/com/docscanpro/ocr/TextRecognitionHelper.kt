@@ -3,7 +3,7 @@ package com.docscanpro.ocr
 import android.graphics.BitmapFactory
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizerOptions
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -18,7 +18,7 @@ class TextRecognitionHelper @Inject constructor() {
         try {
             val bitmap = BitmapFactory.decodeFile(imagePath) ?: return@withContext ""
             val inputImage = InputImage.fromBitmap(bitmap, 0)
-            val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            val recognizer = TextRecognition.getClient(TextRecognizerOptions.Builder().build())
 
             suspendCancellableCoroutine { continuation ->
                 recognizer.process(inputImage)

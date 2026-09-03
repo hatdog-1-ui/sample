@@ -10,5 +10,5 @@
 
     <cache-path
         name="camera_captures"
-        path="captures/" />
+        path="." />
 </paths>

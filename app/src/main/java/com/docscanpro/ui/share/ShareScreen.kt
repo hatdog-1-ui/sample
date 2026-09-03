@@ -22,8 +22,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.automirrored.filled.ChevronRight
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.MoreHoriz
@@ -135,7 +135,7 @@ fun ShareScreen(
                 }
                 AppIconButton(icon = Icons.Filled.CloudUpload, label = "Drive", onClick = onOtherAppClick)
                 AppIconButton(icon = Icons.Filled.Sms, label = "Messages", onClick = onOtherAppClick)
-                AppIconButton(icon = Icons.AutoMirrored.Filled.Chat, label = "WhatsApp", onClick = onOtherAppClick)
+                AppIconButton(icon = Icons.Filled.Chat, label = "WhatsApp", onClick = onOtherAppClick)
                 AppIconButton(icon = Icons.Filled.MoreHoriz, label = "More", onClick = onOtherAppClick)
             }
         }
@@ -222,7 +222,7 @@ private fun GmailCard(onClick: () -> Unit) {
             )
         }
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ChevronRight,
+            imageVector = Icons.Filled.ChevronRight,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
